@@ -46,7 +46,13 @@ h3{
     background-color: rgba(119, 136, 153, 0.676);
 }
 .key{
-    display: none;
+    display: block;
+    padding: 10px;
+    margin: 0 auto;
+    border: 2px solid black;
+    background-color: antiquewhite;
+    font-weight: 800;
+
 }
 
 @media screen and (max-width: 400px) {
