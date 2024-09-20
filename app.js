@@ -3,7 +3,7 @@ const highTxt = document.getElementById('highScore')
 const key = document.querySelector('.key')
 let gameSeq = []
 let userSeq = []
-let highScore = []
+let highScore = [] // Consider changing to just one value
 const btns = ['red', 'green', 'blue', 'yellow']
 
 let level = 0
@@ -57,25 +57,16 @@ function checkSeq(idx) {
         highScore.push(score)
         console.log(highScore)
         levelTxt.innerText = 'Game Over. Press any key to reset, Score: ' + score.toString()
-        highTxt.innerText = highScore.reduce((acc, el) =>{
-            if(el > acc){
-                acc = el
-                return el
-            }
-            else{
-                return acc
-            }
-        })
-        document.removeEventListener('keypress', startGame) 
-        document.addEventListener('keypress', reset) 
-        key.removeEventListener('click', startGame) 
-        key.addEventListener('click', reset) 
+
+        // Update high score display
+        highTxt.innerText = highScore.reduce((acc, el) => el > acc ? el : acc).toString()
+
+        // Toggle game event listeners
+        toggleEventListeners(false)
     }
 }
 
 function reset() {
-    const btnContainer = document.querySelector('.btn-container')
-    btnContainer.style.display = 'none'
     started = false
     level = 0
     score = 0
@@ -83,23 +74,37 @@ function reset() {
     gameSeq = []
     levelTxt.innerText = 'Press any key to start'
 
+    // Reset button display (if applicable)
+    // btnContainer.style.display = 'none'
+
     setTimeout(() => {
-        btnContainer.style.display = 'flex' 
+        // Uncomment this if btnContainer is in use
+        // btnContainer.style.display = 'flex' 
     }, 500)
 
-    document.removeEventListener('keypress', reset) 
-    document.addEventListener('keypress', startGame)
-    key.addEventListener('click', reset) 
-    key.removeEventListener('click', startGame) 
+    // Toggle game event listeners back on
+    toggleEventListeners(true)
 }
 
 function clickBtn() {
     userFlash(this)
     let userBtn = this.id
     userSeq.push(userBtn)
-    checkSeq(userSeq.length - 1) // Fix: checking userSeq length, not gameSeq
+    checkSeq(userSeq.length - 1)
 }
 
 for (let btn of allBtns) {
     btn.addEventListener('click', clickBtn)
+}
+
+function toggleEventListeners(enable) {
+    if (enable) {
+        document.addEventListener('keypress', startGame)
+        key.addEventListener('click', startGame)
+    } else {
+        document.removeEventListener('keypress', startGame)
+        document.addEventListener('keypress', reset)
+        key.removeEventListener('click', startGame)
+        key.addEventListener('click', reset)
+    }
 }
